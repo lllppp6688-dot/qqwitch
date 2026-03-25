@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QQWITCH - สำนักดูดวงออนไลน์</title>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Mali:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- 1. พื้นฐานหน้าเว็บ --- */
+        body {
+            margin: 0; padding: 0; min-height: 100vh;
+            display: flex; flex-direction: column; align-items: center;
+            background-image: url('45.png'); 
+            background-size: cover; background-position: center; background-attachment: fixed;
+            font-family: 'Mali', sans-serif; color: #4a3728;
+        }
+
+        /* --- 2. แผงเมนูหลัก (Arch Container) --- */
+        .arch-container {
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            width: 90%; max-width: 400px;
+            padding: 60px 25px 40px 25px;
+            border-radius: 80px 80px 35px 35px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.2);
+            text-align: center; box-sizing: border-box;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            margin: auto; /* ดันให้อยู่กลางจอ */
+        }
+
+        .title {
+            font-family: 'Great Vibes', cursive !important;
+            color: #ffffff; font-size: 5.5rem; line-height: 0.8;
+            margin: 0 0 45px 0;
+            text-shadow: 0 0 15px #99a840, 0 0 30px #7df1b7b7, 0 0 45px rgba(117, 226, 132, 0.781);
+            display: block;
+        }
+
+        .subtitle { font-style: italic; opacity: 0.9; margin-bottom: 40px; display: block; }
+
+        .service-btn {
+            display: block; width: 100%; margin: 15px 0; padding: 16px;
+            border: 1.5px solid #8b5e3c; border-radius: 50px;
+            background: transparent; color: #8b5e3c;
+            text-decoration: none; font-weight: bold; font-size: 1.1rem;
+            transition: all 0.3s ease; box-sizing: border-box;
+        }
+
+        .contact-btn { background-color: #534031; color: #ffffff; border: none; }
+
+        .service-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(139, 94, 60, 0.3); }
+
+        .contact-bar {
+            background-color: #8aaa4f; color: #ffffff; padding: 14px;
+            border-radius: 50px; display: flex; justify-content: center;
+            align-items: center; gap: 15px; margin-top: 25px; font-size: 0.85rem;
+        }
+
+        /* --- 3. แถบ Footer ล่างสุด --- */
+        .footer-bar {
+            width: 100%; background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(10px); padding: 20px 0;
+            text-align: center; border-top: 1px solid rgba(139, 94, 60, 0.2);
+            margin-top: 20px;
+        }
+
+        .footer-links a {
+            color: #8b5e3c; text-decoration: none; font-size: 13px;
+            margin: 0 10px; cursor: pointer;
+        }
+
+        .footer-links a:hover { text-decoration: underline; }
+
+        .copyright-text { font-size: 11px; color: #666; margin-top: 8px; }
+
+        /* --- 4. หน้าต่าง Popup (Modal) --- */
+        .modal {
+            display: none; position: fixed; z-index: 10000;
+            left: 0; top: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.6); backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background-color: #fffaf5; margin: 10% auto; padding: 30px;
+            border: 2px solid #8b5e3c; width: 85%; max-width: 500px;
+            border-radius: 20px; text-align: left; line-height: 1.6;
+        }
+
+        .close-btn { color: #8b5e3c; float: right; font-size: 28px; font-weight: bold; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <div class="arch-container">
+        <span class="title">QQwitch</span>
+        <span class="subtitle">ดูดวงหาคำตอบที่ใช่สำหรับคุณ</span>
+        
+        <a href="tarot.html" class="service-btn">Tarot ประจำวัน</a>
+        <a href="esiimsi.html" class="service-btn">เซียมซีเซียมซี</a>
+        <a href="astrology.html" class="service-btn">ดูดวงวันเกิด</a>
+        <a href="lifegraph.html" class="service-btn">กราฟชีวิต</a>
+        
+        <a href="https://line.me/ti/p/733brghf" class="service-btn contact-btn">สนใจดูดวงส่วนตัวกับเรา</a>
+
+        <div class="contact-bar">
+            <span>TikTok: <b>@QQwitch</b></span>
+            <div style="width: 1px; height: 12px; background: rgba(255,255,255,0.3);"></div>
+            <span>Line: <b>733brghf</b></span>
+        </div>
+    </div>
+
+    <footer class="footer-bar">
+        <div class="footer-links">
+            <a onclick="openModal('about')">เกี่ยวกับเรา</a> |
+            <a onclick="openModal('contact')">ติดต่อเรา</a> |
+            <a onclick="openModal('privacy')">นโยบายความเป็นส่วนตัว</a>
+        </div>
+        <div class="copyright-text">
+            <p>* คำทำนายนี้เป็นความเชื่อส่วนบุคคล โปรดใช้วิจารณญาณในการรับชม *</p>
+            <p>© 2026 QQWITCH - All Rights Reserved</p>
+        </div>
+    </footer>
+
+    <div id="infoModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <script>
+        const content = {
+            about: `<h3>🔮 เกี่ยวกับ QQWITCH</h3>
+                    <p>ยินดีต้อนรับสู่สำนักดูดวงออนไลน์ QQWITCH ค่ะ เว็บไซต์นี้สร้างขึ้นจากความตั้งใจที่อยากจะมอบพลังบวกและคำชี้แนะผ่านศาสตร์พยากรณ์ ไม่ว่าจะเป็นไพ่ทาโรต์ กราฟชีวิต หรือเซียมซี เพื่อให้ทุกท่านได้พบคำตอบที่ใช่ในวันที่ต้องการกำลังใจค่ะ</p>`,
+            
+            contact: `<h3>📧 ติดต่อเรา</h3>
+                      <p>ท่านสามารถติดต่อสอบถามข้อมูล หรือจองคิวดูดวงส่วนตัวกับเราได้ผ่านช่องทางดังนี้ค่ะ:</p>
+                      <ul>
+                        <li><b>Line ID:</b> 733brghf</li>
+                        <li><b>TikTok:</b> @QQwitch</li>
+                        <li><b>Email:</b> nithikonmam6839@gmail.com</li>
+                      </ul>
+                      <p>ยินดีให้บริการเจ้าชะตาทุกท่านด้วยความเต็มใจค่ะ</p>`,
+            
+            privacy: `<h3>🛡️ นโยบายความเป็นส่วนตัว</h3>
+                      <p>เราให้ความสำคัญกับข้อมูลของท่าน:</p>
+                      <p>1. <b>ข้อมูลส่วนบุคคล:</b> ข้อมูลวันเดือนปีเกิดที่ท่านกรอกเพื่อคำนวณกราฟชีวิต จะถูกใช้ประมวลผลเฉพาะหน้าเว็บนี้เท่านั้น ไม่มีการเก็บลงฐานข้อมูลส่วนกลาง</p>
+                      <p>2. <b>คุกกี้และโฆษณา:</b> เราใช้ Google AdSense เพื่อแสดงโฆษณา โดย Google อาจใช้คุกกี้เพื่อนำเสนอโฆษณาตามความสนใจของท่าน ท่านสามารถปิดการใช้งานคุกกี้ได้ในการตั้งค่าเบราว์เซอร์</p>
+                      <p>3. ข้อมูลของท่านจะไม่ถูกนำไปเผยแพร่หรือจำหน่ายให้แก่บุคคลภายนอกเด็ดขาด</p>`
+        };
+
+        function openModal(type) {
+            document.getElementById('modalBody').innerHTML = content[type];
+            document.getElementById('infoModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('infoModal').style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('infoModal')) closeModal();
+        }
+    </script>
+</body>
+</html>

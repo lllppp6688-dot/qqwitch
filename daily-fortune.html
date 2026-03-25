@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <title>QQWITCH - ดวงจรวันนี้</title>
+    <link rel="stylesheet" href="style.css"> <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { background: #e9e4d9; font-family: 'Mali', sans-serif; }
+        .daily-container { max-width: 600px; margin: 50px auto; padding: 20px; text-align: center; }
+        .chart-container { background: white; padding: 20px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body>
+    <div class="daily-container">
+        <h1>📅 กราฟดวงจรวันนี้</h1>
+        <p id="todayDate"></p>
+        <div class="chart-container">
+            <canvas id="dailyChart"></canvas>
+        </div>
+        <div id="dailyFortuneText" class="card" style="margin-top: 20px;">
+            <h3>คำทำนายภาพรวมวันนี้</h3>
+            <p>พลังดวงจรของท่านมีการเปลี่ยนแปลงตามตำแหน่งดวงดาว... (กำลังประมวลผล)</p>
+        </div>
+        <button class="btn-sub" onclick="window.location.href='lifegraph.html'" style="margin-top:20px;">กลับหน้าหลัก</button>
+    </div>
+
+    <script>
+        // ฟังก์ชันวาดกราฟแบบสุ่ม/คำนวณตามวันที่ปัจจุบัน
+        window.onload = function() {
+            const today = new Date();
+            document.getElementById('todayDate').innerText = today.toLocaleDateString('th-TH', { 
+                weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
+            });
+
+            const ctx = document.getElementById('dailyChart').getContext('2d');
+            // สร้างข้อมูลดวงจรแบบสมมติ (หรือดึงค่าจากหน้าหลักมาผ่าน localStorage)
+            const dailyData = Array.from({length: 12}, () => Math.floor(Math.random() * 12) + 1);
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ["ทรัพย์", "เพื่อน", "ญาติ", "บุตร", "ศัตรู", "คู่ครอง", "โรค", "ลาภ", "งาน", "ยศ", "ความสุข", "มรณะ"],
+                    datasets: [{
+                        label: 'ระดับพลังดวงจร',
+                        data: dailyData,
+                        backgroundColor: '#8b5e3c'
+                    }]
+                }
+            });
+        };
+    </script>
+</body>
+</html>

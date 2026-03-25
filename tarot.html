@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tarot Reading - QQwitch</title>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Mali:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="arch-container" style="max-width: 500px; border-radius: 30px;">
+        <a href="index.html" class="back-btn" style="text-decoration:none; color:#8b5e3c;">← Back to Home</a>
+        
+        <h1 class="title" style="font-size: 3.5rem; margin-top: 10px;">Daily Tarot</h1>
+        <p style="font-style: italic; margin-bottom: 20px;">อธิษฐานแล้วแตะที่ไพ่เพื่อเปิดคำทำนาย</p>
+
+        <div class="card-display" style="perspective: 1000px;">
+            <div class="card-frame" id="card-trigger" style="cursor: pointer; margin: 30px auto;">
+    
+    <img src="image/card-back.png" alt="Tarot Card" id="tarot-img" 
+         style="width: 75%; max-width: 280px; height: auto; object-fit: contain; transition: 0.8s; border-radius: 15px; border: 3px solid #fff; box-shadow: 0 10px 25px rgba(0,0,0,0.3); display: block; margin: 0 auto;">
+        </div>
+
+        <div id="prediction-result" style="display: none; margin-top: 20px;">
+            <h2 id="card-name" style="font-family: 'Great Vibes', cursive; font-size: 2.8rem; color: #8b5e3c; margin-bottom: 10px;">Card Name</h2>
+            <div style="background: rgba(255,255,255,0.6); padding: 20px; border-radius: 15px; text-align: left; font-size: 1rem; border-left: 4px solid #8b5e3c;">
+                <p id="card-meaning"></p>
+            </div>
+            <button onclick="location.reload()" class="service-btn" style="margin-top: 20px;">สุ่มใหม่อีกครั้ง</button>
+        </div>
+        
+
+        <button id="draw-btn" class="service-btn" style="margin-top: 20px;">เปิดไพ่พยากรณ์</button>
+    </div>
+<script>
+        // ฐานข้อมูลไพ่ 22 ใบ (แก้ไข Path ให้วิ่งเข้าไปในโฟลเดอร์ image/)
+        const tarotDeck = [
+            { id: 0, name: "0 The Fool", img: "image/cat-0.png", meaning: "การเริ่มต้นใหม่ด้วยจิตใจที่อิสระและการผจญภัยที่ไร้ความกังวล" },
+            { id: 1, name: "1 The Magician", img: "image/cat-1.png", meaning: "ทักษะ ความฉลาด และพลังในการสร้างสรรค์สิ่งใหม่ให้เกิดขึ้นจริง" },
+            { id: 2, name: "2 The High Priestess", img: "image/cat-2.png", meaning: "สัมผัสพิเศษ ความลึกลับ และความรู้ที่อยู่ลึกภายในจิตใจ" },
+            { id: 3, name: "3 The Empress", img: "image/cat-3.png", meaning: "ความอุดมสมบูรณ์ ความรัก ความเมตตา และการกำเนิดสิ่งดีๆ" },
+            { id: 4, name: "4 The Emperor", img: "image/cat-4.png", meaning: "อำนาจ โครงสร้าง ความเป็นผู้นำ และความมั่นคงในชีวิต" },
+            { id: 5, name: "5 The Hierophant", img: "image/cat-5.png", meaning: "ความเชื่อ ประเพณี การเรียนรู้ และคำแนะนำจากผู้ใหญ่" },
+            { id: 6, name: "6 The Lovers", img: "image/cat-6.png", meaning: "ความรัก การตัดสินใจ และทางเลือกที่ต้องใช้หัวใจนำทาง" },
+            { id: 7, name: "7 The Chariot", img: "image/cat-7.png", meaning: "ความมุ่งมั่น ชัยชนะ และการฝ่าฟันอุปสรรคด้วยความตั้งใจ" },
+            { id: 8, name: "8 Strength", img: "image/cat-8.png", meaning: "ความกล้าหาญ ความอดทน และการใช้ความอ่อนโยนสยบความแข็งกร้าว" },
+            { id: 9, name: "9 The Hermit", img: "image/cat-9.png", meaning: "การทบทวนตัวเอง ความสงบ และการค้นหาความหมายของชีวิต" },
+            { id: 10, name: "10 Wheel of Fortune", img: "image/cat-10.png", meaning: "โชคชะตา การเปลี่ยนแปลง และวัฏจักรของชีวิตที่มีขึ้นมีลง" },
+            { id: 11, name: "11 Justice", img: "image/cat-11.png", meaning: "ความยุติธรรม ความสมดุล และการได้รับผลจากการกระทำ" },
+            { id: 12, name: "12 The Hanged Man", img: "image/cat-12.png", meaning: "การหยุดนิ่งเพื่อทบทวน การเสียสละ และการมองโลกในมุมกลับ" },
+            { id: 13, name: "13 Death", img: "image/cat-13.png", meaning: "การสิ้นสุดเพื่อเริ่มต้นใหม่ การเปลี่ยนแปลงครั้งใหญ่ที่เลี่ยงไม่ได้" },
+            { id: 14, name: "14 Temperance", img: "image/cat-14.png", meaning: "การปรับตัว ความพอดี และการผสมผสานสิ่งที่แตกต่างให้ลงตัว" },
+            { id: 15, name: "15 The Devil", img: "image/cat-15.png", meaning: "กิเลส ตัณหา การยึดติด หรือสถานการณ์ที่ทำให้รู้สึกอึดอัด" },
+            { id: 16, name: "16 The Tower", img: "image/cat-16.png", meaning: "เหตุการณ์กะทันหัน การพังทลายเพื่อสร้างรากฐานใหม่ที่มั่นคง" },
+            { id: 17, name: "17 The Star", img: "image/cat-17.png", meaning: "ความหวัง แรงบันลานใจ และการเยียวยาจิตใจให้กลับมาสดใส" },
+            { id: 18, name: "18 The Moon", img: "image/cat-18.png", meaning: "ความกังวล ความเพ้อฝัน และสิ่งที่ไม่ชัดเจนที่ต้องระวัง" },
+            { id: 19, name: "19 The Sun", img: "image/cat-19.png", meaning: "ความสำเร็จ ความสุข ความรุ่งโรจน์ และพลังงานที่เต็มเปี่ยม" },
+            { id: 20, name: "20 Judgement", img: "image/cat-20.png", meaning: "การตื่นรู้ การปลดปล่อย และการได้รับโอกาสครั้งที่สอง" },
+            { id: 21, name: "21 The World", img: "image/cat-21.png", meaning: "ความสมดุลและความสำเร็จสูงสุดในการทำภารกิจ" }
+        ];
+
+        const drawBtn = document.getElementById('draw-btn');
+        const tarotImg = document.getElementById('tarot-img');
+        const resultBox = document.getElementById('prediction-result');
+        const cardName = document.getElementById('card-name');
+        const cardMeaning = document.getElementById('card-meaning');
+
+        function startDrawing() {
+            // เอฟเฟกต์พลิกไพ่
+            tarotImg.style.transform = "rotateY(180deg)";
+            
+            setTimeout(() => {
+                const randomIndex = Math.floor(Math.random() * tarotDeck.length);
+                const card = tarotDeck[randomIndex];
+
+                // เปลี่ยนรูปและข้อมูล
+                tarotImg.src = card.img;
+                tarotImg.style.transform = "rotateY(0deg)"; // พลิกกลับหน้าใหม่
+                
+                cardName.innerText = card.name;
+                cardMeaning.innerHTML = "<b>คำทำนาย:</b> " + card.meaning;
+
+                // แสดงผลลัพธ์
+                resultBox.style.display = "block";
+                drawBtn.style.display = "none";
+            }, 600);
+        }
+
+        // เช็กว่ามีปุ่มไหมแล้วค่อยใส่เหตุการณ์คลิก
+        if(drawBtn) {
+            drawBtn.addEventListener('click', startDrawing);
+        }
+        
+        // ให้กดที่ตัวไพ่เพื่อสุ่มได้เหมือนกัน
+        const cardTrigger = document.getElementById('card-trigger');
+        if(cardTrigger) {
+            cardTrigger.addEventListener('click', startDrawing);
+        }
+    </script>
+</body>
+</html>

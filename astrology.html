@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Astrology Analysis - QQwitch</title>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Mali:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="arch-container" id="main-box" style="max-width: 650px; border-radius: 250px 250px 50px 50px;">
+        <a href="index.html" class="back-btn" style="text-decoration:none; color:#8b5e3c; position: relative; top: -10px;">← Back to Home</a>
+        
+        <h2 class="title" style="font-size: 3.5rem; margin-top: 10px;">The Celestial Record</h2>
+        <p style="font-style: italic; color: #8b5e3c; margin-bottom: 30px;">ลิขิตดวงชะตาจากห้วงดวงดาว</p>
+        
+        <div id="form-content">
+            <div class="input-group">
+                <label>Your Sacred Name (ชื่อของคุณ)</label>
+                <input type="text" id="user-name" placeholder="ระบุชื่อเพื่อเปิดสมุดชะตา">
+            </div>
+
+            <div class="input-group">
+                <label>Date of Birth (วันเกิด)</label>
+                <div style="display:flex; gap:8px;">
+                    <select id="day" style="flex:1">
+                        <script>
+                            for(let i=1; i<=31; i++) document.write(`<option value="${i}">${i}</option>`);
+                        </script>
+                    </select>
+
+                    <select id="month" style="flex:2">
+                        <option value="มกราคม">มกราคม</option>
+                        <option value="กุมภาพันธ์">กุมภาพันธ์</option>
+                        <option value="มีนาคม">มีนาคม</option>
+                        <option value="เมษายน">เมษายน</option>
+                        <option value="พฤษภาคม">พฤษภาคม</option>
+                        <option value="มิถุนายน">มิถุนายน</option>
+                        <option value="กรกฎาคม">กรกฎาคม</option>
+                        <option value="สิงหาคม">สิงหาคม</option>
+                        <option value="กันยายน">กันยายน</option>
+                        <option value="ตุลาคม">ตุลาคม</option>
+                        <option value="พฤศจิกายน">พฤศจิกายน</option>
+                        <option value="ธันวาคม">ธันวาคม</option>
+                    </select>
+
+                    <select id="year" style="flex:1.5">
+                        <script>
+                            const currentYear = new Date().getFullYear() + 543;
+                            for(let i=currentYear; i>=2490; i--) document.write(`<option value="${i}">${i}</option>`);
+                        </script>
+                    </select>
+                </div>
+            </div>
+
+            <button class="service-btn" id="btn-submit" style="margin-top: 20px;">Reveal My Destiny</button>
+        </div>
+
+        <div id="result-content" style="display:none; text-align:left; margin-top:10px;">
+            <p id="personal-info" style="font-family: 'Great Vibes', cursive; font-size: 2.5rem; color:#8b5e3c; text-align:center; margin-bottom: 5px;"></p>
+            <p id="date-display" style="text-align:center; font-size: 0.9rem; margin-bottom: 20px; color: #666;"></p>
+            
+            <div style="background:rgba(255,255,255,0.6); padding:25px; border-radius:15px; border-left: 4px solid #8b5e3c; box-shadow: inset 0 0 10px rgba(0,0,0,0.05);">
+                <p id="trait" style="margin-bottom: 15px;"></p>
+                <p id="wealth" style="margin-bottom: 15px;"></p>
+                <p id="love" style="margin-bottom: 15px;"></p>
+                <p id="merit" style="color:#b33939; font-weight: bold;"></p>
+            </div>
+            
+            <button onclick="location.reload()" class="service-btn" style="margin-top: 30px;">Read Another Destiny</button>
+        </div>
+    </div>
+
+    <script>
+        const fortuneDatabase = [  {
+    trait: "<b>✨ ตัวตนของคุณ:</b> คุณเป็นคนรักอิสระ ชอบเรียนรู้สิ่งใหม่ๆ อยู่เสมอ และมีโลกส่วนตัวสูงในบางมุม",
+    wealth: "<b>💰 การเงิน:</b> การเงินเริ่มหมุนเวียนดีขึ้น จะมีช่องทางทำเงินใหม่ๆ จากงานอดิเรกที่ชอบ",
+    love: "<b>💕 ความรัก:</b> ความรักที่เคยคลุมเครือจะเริ่มชัดเจนขึ้น มีเกณฑ์ได้ปรับความเข้าใจกับคนรัก",
+    merit: "<b>🙏 เสริมดวง:</b> ร่วมทำบุญถวายสังฆทานยาหรือบริจาคอุปกรณ์การแพทย์ เพื่อเสริมสุขภาพและปัดเป่าอุปสรรค"
+  },
+  {
+    trait: "<b>✨ ตัวตนของคุณ:</b> คุณเป็นคนที่มีความพยายามสูง ไม่ยอมแพ้อะไรง่ายๆ และเป็นที่ปรึกษาที่ดีให้กับคนรอบข้าง",
+    wealth: "<b>💰 การเงิน:</b> ระวังรายจ่ายจุกจิกที่เกิดจากอารมณ์ชั่ววูบ แต่โดยรวมยังถือว่ามีเงินเก็บในเกณฑ์ดี",
+    love: "<b>💕 ความรัก:</b> จะได้พบคนที่ไลฟ์สไตล์ตรงกันจากการไปร่วมงานกิจกรรมหรืองานสังสรรค์",
+    merit: "<b>🙏 เสริมดวง:</b> แนะนำให้ไหว้ขอพรพระพิฆเนศ เพื่อขอความสำเร็จในหน้าที่การงานและการเงิน"
+  },
+  {
+    trait: "<b>✨ ตัวตนของคุณ:</b> คุณเป็นคนอ่อนโยน ช่างเห็นใจผู้อื่น และมีความคิดสร้างสรรค์ที่โดดเด่น",
+    wealth: "<b>💰 การเงิน:</b> จะมีคนหยิบยื่นโอกาสดีๆ มาให้ หรือได้ลาภลอยจากการเสี่ยงโชคเล็กๆ น้อยๆ",
+    love: "<b>💕 ความรัก:</b> คนมีคู่ระวังเรื่องเวลาที่ไม่ตรงกัน ควรหาเวลาไปเที่ยวพักผ่อนเพื่อเติมความหวาน",
+    merit: "<b>🙏 เสริมดวง:</b> บริจาคสิ่งของเครื่องใช้ให้บ้านเด็กกำพร้า จะช่วยเสริมเมตตามหานิยมให้คนเอ็นดู"
+  },
+  {
+    trait: "<b>✨ ตัวตนของคุณ:</b> คุณเป็นคนตรงไปตรงมา รักความยุติธรรม และมีความรับผิดชอบในหน้าที่การงานดีเยี่ยม",
+    wealth: "<b>💰 การเงิน:</b> ช่วงนี้ควรงดการค้ำประกันหรือให้คนหยิบยืมเงิน มีเกณฑ์จะเสียทรัพย์เพราะความใจอ่อน",
+    love: "<b>💕 ความรัก:</b> คนโสดเสน่ห์แรง มีคนเข้ามาทำความรู้จักพร้อมกันหลายคน ให้ค่อยๆ ศึกษาดูใจ",
+    merit: "<b>🙏 เสริมดวง:</b> ทำบุญปล่อยนกปล่อยปลา หรือไถ่ชีวิตโคกระบือ เพื่อสะเดาะเคราะห์และเพิ่มบุญบารมี"
+  },
+  {
+    trait: "<b>✨ ตัวตนของคุณ:</b> คุณเป็นคนมีความทะเยอทะยาน มีเป้าหมายชัดเจน และไม่หยุดนิ่งที่จะพัฒนาตัวเอง",
+    wealth: "<b>💰 การเงิน:</b> การลงทุนในสินทรัพย์ระยะยาวจะเริ่มเห็นผลกำไรที่น่าพอใจ มีโชคจากอสังหาริมทรัพย์",
+    love: "<b>💕 ความรัก:</b> มีเกณฑ์จะได้พบรักกับคนทางไกล หรือคนต่างชาติที่เข้ามาดูแลเอาใจใส่เป็นอย่างดี",
+    merit: "<b>🙏 เสริมดวง:</b> สวดมนต์บทชินบัญชรก่อนนอน และทำสมาธิสม่ำเสมอ เพื่อเสริมสติปัญญาและโชคลาภ"
+  },
+  {
+    trait: "<b>✨ ตัวตนของคุณ:</b> คุณเป็นคนช่างเลือก ละเอียดรอบคอบ และชอบวางแผนล่วงหน้าอยู่เสมอ",
+    wealth: "<b>💰 การเงิน:</b> รายได้มั่นคงดี แต่ให้ระวังเรื่องการลงทุนที่ดูเสี่ยงเกินไปในช่วงนี้",
+    love: "<b>💕 ความรัก:</b> จะได้ของขวัญที่ถูกใจจากคนรัก หรือมีการวางแผนอนาคตร่วมกันอย่างจริงจัง",
+    merit: "<b>🙏 เสริมดวง:</b> บริจาคหนังสือเรียนหรืออุปกรณ์การศึกษาให้เด็กยากไร้ เพื่อเสริมดวงเรื่องปัญญาและงาน"
+  },
+  {
+    trait: "<b>✨ ตัวตนของคุณ:</b> คุณเป็นคนที่มีความมั่นใจในตัวเองสูง มีเสน่ห์ต่อเพศตรงข้าม และมีความเป็นศิลปิน",
+    wealth: "<b>💰 การเงิน:</b> การเจรจาต่อรองจะสำเร็จผล มีคนคอยสนับสนุนด้านเงินทุนหากติดขัด",
+    love: "<b>💕 ความรัก:</b> ช่วงนี้ความสัมพันธ์จะดูตื่นเต้น มีเรื่องเซอร์ไพรส์จากคนพิเศษให้ประทับใจ",
+    merit: "<b>🙏 เสริมดวง:</b> ไหว้ขอพรศาลหลักเมือง หรือไหว้พระแก้วมรกต เพื่อความเป็นสิริมงคลและความมั่นคงในชีวิต"
+  },
+  {
+    trait: "<b>✨ ตัวตนของคุณ:</b> คุณเป็นคนรักสงบ ไม่ชอบความขัดแย้ง และมีความอดทนอดกลั้นสูงมาก",
+    wealth: "<b>💰 การเงิน:</b> การเงินคล่องตัวดีมาก จะมีโชคจากตัวเลขใกล้ตัว หรือเลขที่เกี่ยวข้องกับที่อยู่อาศัย",
+    love: "<b>💕 ความรัก:</b> คนรักเก่ามีเกณฑ์จะกลับมาพูดคุย หรือได้รับข่าวสารที่ทำให้คุณรู้สึกสบายใจขึ้น",
+    merit: "<b>🙏 เสริมดวง:</b> ร่วมทำบุญสร้างโบสถ์ วิหาร หรือร่วมสมทบทุนบูรณะวัดเก่า เพื่อเสริมรากฐานชีวิตให้แข็งแกร่ง"
+  },
+  {
+    trait: "<b>✨ ตัวตนของคุณ:</b> คุณเป็นคนกล้าหาญ ชอบความท้าทาย และเป็นคนที่เพื่อนฝูงสามารถพึ่งพาได้เสมอ",
+    wealth: "<b>💰 การเงิน:</b> ระวังเรื่องการเสียเงินกับเรื่องสุขภาพของคนในครอบครัว แต่จะมีรายได้เสริมเข้ามาช่วยพยุงไว้",
+    love: "<b>💕 ความรัก:</b> มีโอกาสได้เริ่มต้นความสัมพันธ์ใหม่ๆ ที่เริ่มจากความเป็นเพื่อนแล้วค่อยๆ พัฒนาไป",
+    merit: "<b>🙏 เสริมดวง:</b> ทำบุญโลงศพหรือบริจาคผ้าขาวห่อศพ เพื่อแก้เคล็ดและเสริมดวงชะตาให้พ้นจากอุปสรรค"
+  },
+  { trait: "<b>✨ ตัวตนของคุณ:</b> คุณเป็นคนมีไหวพริบดี แก้ปัญหาเฉพาะหน้าได้เก่ง มีความเป็นผู้นำสูงและกล้าตัดสินใจ",
+    wealth: "<b>💰 การเงิน:</b> ช่วงนี้มีเกณฑ์ได้รับโชคลาภจากการเดินทาง หรือได้เงินก้อนจากงานโปรเจกต์พิเศษ",
+    love: "<b>💕 ความรัก:</b> คนโสดมีโอกาสพบรักในที่ทำงานหรือผ่านการแนะนำจากผู้ใหญ่ที่เคารพ",
+    merit: "<b>🙏 เสริมดวง:</b> แนะนำให้เติมน้ำมันตะเกียงหรือบริจาคค่าไฟให้วัด เพื่อช่วยให้ชีวิตราบรื่นโชติช่วง"
+  },
+            {
+                trait: "<b>✨ ตัวตนของคุณ:</b> คุณเป็นคนมีเสน่ห์ลึกลับ ช่างสังเกต และมีความเป็นศิลปินในตัวสูง มักจะมองเห็นสิ่งที่คนอื่นมองข้าม",
+                wealth: "<b>💰 การเงิน:</b> โชคลาภมักจะมาจากคำพูดและการเจรจา มีเกณฑ์ได้ลาภลอยจากการเดินทางไกล",
+                love: "<b>💖 ความรัก:</b> คุณต้องการความสัมพันธ์ที่ลึกซึ้งและจริงใจ จะพบคนที่มีวุฒิภาวะสูงกว่าเข้ามาดูแล",
+                merit: "<b>🙏 เสริมดวง:</b> แนะนำให้ถวายน้ำเปล่าสะอาดหรือบริจาคค่าน้ำค่าไฟเพื่อเพิ่มความราบรื่นในชีวิต"
+            },
+            {
+                trait: "<b>✨ ตัวตนของคุณ:</b> คุณมีความเป็นผู้นำ มีความมุ่งมั่นตั้งใจจริง และรักความยุติธรรมเป็นที่สุด",
+                wealth: "<b>💰 การเงิน:</b> การเงินมั่นคงจากน้ำพักน้ำแรง จะมีโชคจากการลงทุนระยะยาวหรืออสังหาริมทรัพย์",
+                love: "<b>💖 ความรัก:</b> เป็นคนรักเดียวใจเดียว จะได้คู่ครองที่ขยันและช่วยกันสร้างฐานะได้ดี",
+                merit: "<b>🙏 เสริมดวง:</b> ร่วมทำบุญชำระหนี้สงฆ์ หรือบริจาคเงินสมทบทุนสร้างวิหารจะช่วยเสริมบารมี"
+            },
+            {
+                trait: "<b>✨ ตัวตนของคุณ:</b> คุณเป็นคนร่าเริง แจ่มใส ปรับตัวเก่งเข้ากับคนง่าย เหมือนแสงแดดยามเช้า",
+                wealth: "<b>💰 การเงิน:</b> หมุนเงินเก่ง มีโอกาสได้เงินก้อนจากการค้าขายหรือธุรกิจส่วนตัว",
+                love: "<b>💖 ความรัก:</b> จะพบรักแบบไม่คาดฝันในสถานที่รื่นเริง หรือเพื่อนแนะนำให้รู้จัก",
+                merit: "<b>🙏 เสริมดวง:</b> ทำบุญกับเด็กกำพร้าหรือผู้ยากไร้ จะช่วยให้การเงินคล่องตัวไม่ติดขัด"
+            },
+            {
+                trait: "<b>✨ ตัวตนของคุณ:</b> คุณเป็นคนสุขุม นุ่มลึก มีระเบียบวินัย และเป็นที่ปรึกษาที่ดีให้กับเพื่อนฝูงเสมอ",
+                wealth: "<b>💰 การเงิน:</b> มีเกณฑ์ได้รับมรดกหรือของขวัญล้ำค่าจากผู้ใหญ่ที่เอ็นดู",
+                love: "<b>💖 ความรัก:</b> ความรักจะมั่นคงแบบค่อยเป็นค่อยไป จะเจอเนื้อคู่ที่เป็นคนใจเย็นและอบอุ่น",
+                merit: "<b>🙏 เสริมดวง:</b> แนะนำให้ไหว้พระพรหม หรือทำบุญที่เกี่ยวกับหนังสือธรรมะจะเสริมสติปัญญา"
+            }
+            
+        ];
+
+        document.getElementById('btn-submit').addEventListener('click', function() {
+            const name = document.getElementById('user-name').value;
+            const day = document.getElementById('day').value;
+            const month = document.getElementById('month').value;
+            const year = document.getElementById('year').value;
+
+            if(!name) {
+                alert("กรุณาระบุชื่อก่อนเปิดคำทำนายนะ");
+                return;
+            }
+
+            // คำนวณ Index ของคำทำนาย (ใช้ผลรวมวันที่หารเหลือเศษ)
+            const fateIndex = parseInt(day) % fortuneDatabase.length;
+            const result = fortuneDatabase[fateIndex];
+
+            // แสดงผล
+            document.getElementById('form-content').style.display = 'none';
+            document.getElementById('result-content').style.display = 'block';
+            
+            document.getElementById('personal-info').innerText = name;
+            document.getElementById('date-display').innerText = `Born on ${day} ${month} ${year}`;
+            
+            document.getElementById('trait').innerHTML = result.trait;
+            document.getElementById('wealth').innerHTML = result.wealth;
+            document.getElementById('love').innerHTML = result.love;
+            document.getElementById('merit').innerHTML = result.merit;
+        });
+    </script>
+</body>
+</html>

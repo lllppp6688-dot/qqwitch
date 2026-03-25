@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QQWITCH - ระบบพยากรณ์ชะตาชีวิตฉบับสมบูรณ์</title>
+    <link href="https://fonts.googleapis.com/css2?family=Mali:wght@300;400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <style>
+        :root { --gold: #d4a373; --dark: #2c1e12; --accent: #8b5e3c; --bg: #fdfaf1; }
+        body { margin: 0; background: var(--bg); font-family: 'Mali', sans-serif; color: var(--dark); line-height: 1.6; }
+        .container { width: 95%; max-width: 1000px; margin: 20px auto; background: #fffdf5; border-radius: 30px; padding: 40px; box-shadow: 0 20px 60px rgba(0,0,0,0.1); border: 1px solid var(--gold); }
+        .header { text-align: center; border-bottom: 3px double var(--gold); padding-bottom: 20px; margin-bottom: 30px; }
+        .header h1 { font-size: 3.5rem; margin: 0; color: var(--accent); letter-spacing: 2px; }
+        
+        .input-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; padding: 25px; border-radius: 20px; border: 1px solid var(--gold); margin-bottom: 30px; background: rgba(212, 163, 115, 0.05); }
+        .input-group label { display: block; font-weight: bold; margin-bottom: 5px; font-size: 0.9rem; }
+        input, select { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--gold); font-family: 'Mali'; box-sizing: border-box; }
+        
+        .btn-submit { background: var(--accent); color: white; padding: 18px 50px; border: none; border-radius: 50px; font-size: 1.5rem; font-weight: bold; cursor: pointer; transition: 0.3s; display: block; margin: 0 auto; box-shadow: 0 5px 15px rgba(139, 94, 60, 0.3); }
+        .btn-submit:hover { background: var(--dark); transform: scale(1.05); }
+        
+        #resultArea { display: none; animation: fadeIn 0.8s ease; margin-top: 40px; }
+        .card { background: white; border-radius: 20px; padding: 30px; margin-bottom: 25px; border-left: 12px solid var(--accent); box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        .card h3 { color: var(--accent); margin-top: 0; border-bottom: 1px dashed #eee; padding-bottom: 10px; font-size: 1.4rem; }
+        
+        .chart-container { height: 400px; margin: 20px 0; }
+        .table-wrapper { overflow-x: auto; margin: 20px 0; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; min-width: 800px; background: white; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: center; }
+        th { background: var(--accent); color: white; }
+        
+        .report-box { background: #fffcf0; border: 2px solid var(--gold); border-radius: 20px; padding: 30px; margin-top: 30px; }
+        .report-item { margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid #eee; }
+        .report-item b { color: var(--accent); font-size: 1.2rem; display: block; margin-bottom: 5px; }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>QQWITCH</h1>
+        <p>✨ ระบบถอดรหัสชะตาชีวิต ๑๒ ตำแหน่ง ✨</p>
+    </div>
+
+    <div class="input-grid">
+        <div class="input-group">
+            <label>ชื่อ-นามสกุล:</label>
+            <input type="text" id="uName" placeholder="ระบุชื่อ">
+        </div>
+        <div class="input-group">
+            <label>วันที่เกิด (1-31):</label>
+            <input type="number" id="uDate" value="15" min="1" max="31">
+        </div>
+        <div class="input-group">
+            <label>เดือนเกิด:</label>
+            <select id="uMonth">
+                <option value="1">มกราคม</option><option value="2">กุมภาพันธ์</option><option value="3">มีนาคม</option>
+                <option value="4">เมษายน</option><option value="5">พฤษภาคม</option><option value="6">มิถุนายน</option>
+                <option value="7">กรกฎาคม</option><option value="8">สิงหาคม</option><option value="9">กันยายน</option>
+                <option value="10">ตุลาคม</option><option value="11">พฤศจิกายน</option><option value="12">ธันวาคม</option>
+            </select>
+        </div>
+        <div class="input-group">
+            <label>พ.ศ. เกิด:</label>
+            <input type="number" id="uYear" value="2546">
+        </div>
+        <div class="input-group">
+            <label>วันเกิด:</label>
+            <select id="uDay">
+                <option value="1">วันอาทิตย์</option><option value="2">วันจันทร์</option><option value="3">วันอังคาร</option>
+                <option value="4">วันพุธ</option><option value="5">วันพฤหัสบดี</option><option value="6">วันศุกร์</option>
+                <option value="0">วันเสาร์</option>
+            </select>
+        </div>
+        <div class="input-group">
+            <label>เวลาเกิด:</label>
+            <input type="time" id="uTime" value="09:00">
+        </div>
+    </div>
+
+    <button class="btn-submit" onclick="startOracle()">🔮 วิเคราะห์ดวงชะตา</button>
+
+    <div id="resultArea">
+        <div class="card" style="text-align:center; border:none; background: transparent; box-shadow: none;">
+            <h2 id="resName" style="font-size: 2.2rem; color: var(--accent);"></h2>
+            <h3 id="resZodiac" style="color: var(--gold); font-size: 1.5rem;"></h3>
+        </div>
+
+        <div class="card">
+            <h3>📈 กราฟชีวิต (จิ้มที่จุดเพื่อดูคำทำนายแต่ละภพ)</h3>
+            <div class="chart-container"><canvas id="lifeChart"></canvas></div>
+        </div>
+
+        <div class="card">
+            <h3>📊 ตารางฐานเลขศาสตร์</h3>
+            <div id="tableOutput" class="table-wrapper"></div>
+        </div>
+
+        <div id="prophecyContent"></div>
+
+        <div id="fullReportArea"></div>
+    </div>
+</div>
+
+<script>
+    let myChart = null;
+
+    // --- 1. ข้อมูลพื้นฐาน: วันเกิด 7 วัน (ละเอียด) ---
+    const dayData = {
+        1: "<b>วันอาทิตย์ (ธาตุไฟ):</b> เป็นคนใจกว้าง รักพวกพ้อง มีความเป็นผู้นำสูงส่ง มักได้แบกรับภาระแทนผู้อื่นเสมอ ชีวิตมักจะโดดเด่นในวงสังคม มีเกียรติยศชื่อเสียง แต่ระวังเรื่องอารมณ์ที่ร้อนดั่งไฟและทิฐิที่อาจทำให้เสียเรื่องได้ค่ะ มีพลังอำนาจในการบุกเบิกและสร้างสรรค์สิ่งใหม่ๆ ได้ดีเยี่ยม",
+        2: "<b>วันจันทร์ (ธาตุดินอ่อน):</b> เป็นคนอ่อนโยน ช่างจินตนาการ มีเมตตาธรรมสูง มักได้รับความเอ็นดูจากผู้ใหญ่เสมอ มีเสน่ห์ที่คำพูดและกิริยา แต่ภายในใจมักมีความกังวลหรือคิดมากเกินเหตุ ควรระวังเรื่องการเชื่อคนง่ายและการถูกเอาเปรียบค่ะ มีดวงนารีอุปถัมภ์และมีโชคจากความเมตตา",
+        3: "<b>วันอังคาร (ธาตุลม):</b> เป็นนักสู้ผู้ไม่แพ้ มีความกล้าหาญ ขยันขันแข็ง และตรงไปตรงมาที่สุด เป็นคนรักเกียรติยิ่งชีพ ทำงานไว ใจร้อนแต่โกรธง่ายหายเร็ว ชีวิตมักจะประสบความสำเร็จได้ด้วยน้ำพักน้ำแรงของตัวเองอย่างน่าภาคภูมิใจค่ะ เหมาะกับงานที่ต้องใช้ความรวดเร็วและการตัดสินใจ",
+        4: "<b>วันพุธ (ธาตุน้ำ):</b> เป็นปราชญ์แห่งการสื่อสาร มีสติปัญญาเฉลียวฉลาด ไหวพริบปฏิภาณเป็นเลิศ ปรับตัวเข้ากับสถานการณ์เก่งเหมือนน้ำ มีวาทศิลป์ในการจูงใจคน งานที่ใช้ความคิดหรือการเจรจาจะนำพาทรัพย์สินมาให้มหาศาลค่ะ เป็นคนมีไหวพริบเอาตัวรอดได้ในทุกวิกฤต",
+        5: "<b>วันพฤหัสบดี (ธาตุดินแข็ง):</b> เป็นผู้ทรงความรู้ มีคุณธรรมและจริยธรรมสูง มักเป็นที่ปรึกษาหรือที่พึ่งพิงของคนรอบข้าง มีโชคจากความรู้และวิชาการ มีสิ่งศักดิ์สิทธิ์คุ้มครองแรง ชีวิตมีความมั่นคงและมักจะได้ดิบได้ดีในตำแหน่งหน้าที่การงานสูงๆ ค่ะ เป็นคนมีสมาธิดีและเรียนรู้เร็ว",
+        6: "<b>วันศุกร์ (ธาตุลม):</b> เป็นผู้มีรสนิยมวิไล รักสวยรักงาม มีศิลปะในหัวใจ เป็นคนมีเสน่ห์ดึงดูดใจผู้คนรอบข้าง ไม่ชอบความขัดแย้ง ชีวิตมักจะวนเวียนอยู่กับความสุขสบายและโชคลาภด้านเงินทองที่มักจะเข้ามาแบบไม่ขาดสายค่ะ มีพรสวรรค์ด้านการสร้างความสุขให้ผู้อื่น",
+        0: "<b>วันเสาร์ (ธาตุไฟ):</b> เป็นคนหนักแน่นดั่งภูเขาหิน มีความอดทนเป็นเลิศและมีความรับผิดชอบสูงมาก เป็นคนเก็บความรู้สึกเก่ง ความสำเร็จในชีวิตอาจมาช้ากว่าคนอื่น แต่เมื่อมาถึงแล้วจะมีความมั่นคงถาวรและยิ่งใหญ่ที่สุดค่ะ เป็นคนคิดการณ์ไกลและมีความมุ่งมั่นไม่ลดละ"
+    };
+
+    // --- 2. ข้อมูลพื้นฐาน: เดือนเกิด 12 เดือน (ละเอียด) ---
+    const monthDetailData = {
+        1: "<b>มกราคม:</b> มักเป็นคนมีความทะเยอทะยานสูง มีระเบียบวินัยและชอบวางแผนชีวิตล่วงหน้า เป็นคนหนักแน่นและพึ่งพาได้เสมอ มีความเป็นผู้ใหญ่เกินตัว",
+        2: "<b>กุมภาพันธ์:</b> มีความคิดสร้างสรรค์ล้ำสมัย รักอิสระและมีความเป็นตัวของตัวเองสูง มักมีมุมมองที่คนอื่นคาดไม่ถึงเสมอ เป็นนักปฏิวัติทางความคิด",
+        3: "<b>มีนาคม:</b> เป็นคนขี้สงสาร มีจิตใจเมตตาและมีซิกเซนส์แรง ลางสังหรณ์แม่นยำ มักมีความสุขกับการได้ช่วยเหลือผู้อื่น มีอารมณ์สุนทรีย์สูง",
+        4: "<b>เมษายน:</b> มีพลังงานเหลือล้น กล้าหาญและเป็นนักบุกเบิกตัวยง ไม่กลัวอุปสรรค พร้อมพุ่งชนทุกปัญหาเพื่อให้ถึงเป้าหมาย มีความกระตือรือร้นสูง",
+        5: "<b>พฤษภาคม:</b> เป็นคนจิตใจมั่นคง รักความสงบและชื่นชอบความสวยงาม มีความอดทนสูงและมักจะสะสมทรัพย์สินได้เก่งมาก รักในธรรมชาติ",
+        6: "<b>มิถุนายน:</b> มีไหวพริบดีเยี่ยม ช่างเจรจาและมีความสามารถในการเรียนรู้สิ่งใหม่ๆ ได้รวดเร็ว เป็นคนเข้าสังคมเก่งและมีเพื่อนเยอะ ปรับตัวเก่ง",
+        7: "<b>กรกฎาคม:</b> รักครอบครัวเป็นที่สุด มีความอ่อนโยนและปกป้องคนที่ตนรักอย่างเต็มที่ มักมีอารมณ์ศิลปินและช่างจดช่างจำ รักในถิ่นกำเนิด",
+        8: "<b>สิงหาคม:</b> มีบารมีและพลังอำนาจในตัว ชอบความโดดเด่นและเป็นผู้นำ มีจิตใจที่กว้างขวางดั่งมหาสมุทรและรักษาสัจจะยิ่งชีพ มีสง่าราศี",
+        9: "<b>กันยายน:</b> เป็นคนละเอียดรอบคอบ รักความสะอาดและความสมบูรณ์แบบ มีความคิดที่เป็นระบบและเก่งในการวิเคราะห์สิ่งต่างๆ มีพรสวรรค์ด้านการจัดการ",
+        10: "<b>ตุลาคม:</b> มีเสน่ห์เหลือร้าย รักความยุติธรรมและมีความเป็นกลางเสมอ ปรับตัวเก่งและมักเป็นที่รักของคนในวงสังคม มีวาทศิลป์ในการประสานรอยร้าว",
+        11: "<b>พฤศจิกายน:</b> เป็นคนมีความลึกลับน่าค้นหา มีความมุ่งมั่นตั้งใจสูงและไม่ยอมแพ้อะไรง่ายๆ มีพลังอำนาจแฝงที่น่าเกรงขาม มีซิกเซนส์ที่แม่นยำ",
+        12: "<b>ธันวาคม:</b> เป็นคนร่าเริง แจ่มใส และชอบแสวงหาความรู้ใหม่ๆ อยู่เสมอ มีโชคลาภจากการเดินทางและมักมองโลกในแง่ดี มีจิตใจที่เปิดกว้าง"
+    };
+
+    // --- 3. ข้อมูลพื้นฐาน: เวลาเกิด (ละเอียด) ---
+    function getBirthTimeText(uTime) {
+        const hour = parseInt(uTime.split(':')[0]);
+        if (hour >= 6 && hour < 8) return "<b>รุ่งอรุณ (06:00-08:00):</b> มีพลังชีวิตที่สดใส กระตือรือร้น รักอิสระเหมือนนกที่เริ่มออกหากิน ชีวิตมักจะมีการเริ่มต้นใหม่ที่สวยงามเสมอ เป็นคนคิดเร็วทำเร็ว";
+        if (hour >= 8 && hour < 10) return "<b>ช่วงสาย (08:00-10:00):</b> เป็นคนสุขุมรอบคอบ มีเสน่ห์และวาทศิลป์ในการพูดคุย มักเป็นที่รักและได้รับความช่วยเหลือจากคนรอบข้างอย่างสม่ำเสมอ มีดวงคนสนับสนุน";
+        if (hour >= 10 && hour < 12) return "<b>เที่ยงวัน (10:00-12:00):</b> มีความมุ่งมั่น ทะเยอทะยานสูงส่ง มีดวงเป็นผู้นำและเจ้าคนนายคน ชีวิตมักจะประสบความสำเร็จในช่วงวัยกลางคนอย่างยิ่งใหญ่ มีความมั่นใจสูง";
+        if (hour >= 12 && hour < 14) return "<b>ช่วงบ่าย (12:00-14:00):</b> ปรับตัวเก่งเหมือนน้ำ ช่างเจรจาพาทีและมีความสามารถรอบด้าน มักมีดวงจากการเดินทางหรือการติดต่อประสานงานกับต่างถิ่น มีความคล่องตัวสูง";
+        if (hour >= 14 && hour < 16) return "<b>เย็น (14:00-16:00):</b> มีอารมณ์ศิลปิน รักความสงบและสุนทรียภาพในชีวิต เป็นคนมีรสนิยมดีและมักจะได้รับความสุขสบายในบั้นปลายชีวิต มีเสน่ห์ที่เรียบง่าย";
+        if (hour >= 16 && hour < 18) return "<b>พลบค่ำ (16:00-18:00):</b> เป็นคนมีเสน่ห์ลึกลับ ใจคอหนักแน่นและซื่อสัตย์ต่อความรู้สึกของตนเอง มักมีโชคลาภจากการลงทุนและการเก็บออม มีความอดทนสูง";
+        if (hour >= 18 && hour < 20) return "<b>หัวค่ำ (18:00-20:00):</b> รักครอบครัวและกตัญญูเป็นเลิศ เป็นคนโอบอ้อมอารีและชอบดูแลผู้อื่น ชีวิตมักจะมีมิตรสหายที่ดีคอยซัพพอร์ตเสมอ มีความนิ่งสงบ";
+        if (hour >= 20 && hour < 22) return "<b>ดึก (20:00-22:00):</b> มีโลกส่วนตัวสูง มีความคิดที่ลึกซึ้งและมักจะสนใจในศาสตร์ลึกลับหรืองานด้านค้นคว้าวิจัย มีความมุ่งมั่นที่น่าเกรงขามและมีอำนาจภายใน";
+        if (hour >= 22 || hour < 0) return "<b>เที่ยงคืน (22:00-00:00):</b> มีพลังแฝงในตัวสูงมาก ความคิดอ่านว่องไวและเฉียบคม มักได้ดีในงานที่ต้องใช้ความลับหรืองานเบื้องหลังที่ยิ่งใหญ่ มีความลึกลับน่าเกรงขาม";
+        return "<b>เช้ามืด (00:00-06:00):</b> เป็นนักสู้ที่แท้จริง มีความอดทนและแข็งแกร่งเป็นเลิศ สร้างฐานะด้วยหยาดเหงื่อแรงกายของตนเองจนมั่งคั่งและมั่นคง มีจิตวิญญาณนักสู้";
+    }
+
+    // --- 4. คัมภีร์คู่ครองวาสนาเศรษฐี (แบบละเอียดบรรยายยาว) ---
+    const spouseProphecy = {
+        1: "<b>คู่ครองวาสนาเศรษฐี:</b> จะได้คู่ครองที่มีลักษณะเป็นผู้นำสูง ผิวพรรณผ่องใส มีสง่าราศี เป็นคนที่มีอำนาจบารมีและเป็นที่เคารพเกรงขามในสังคม เมื่ออยู่กินกันแล้วจะช่วยส่งเสริมเกียรติยศชื่อเสียงให้แก่กันอย่างมาก ชีวิตรักจะเต็มไปด้วยความภาคภูมิใจและมั่นคงดั่งปราสาทราชวังค่ะ",
+        2: "<b>คู่ครองเมตตามหานิยม:</b> จะได้คู่ครองที่มีรูปร่างหน้าตาสะสวยหรือหล่อเหลา มีกิริยามารยาทอ่อนหวาน พูดจาไพเราะ เป็นคนที่มีจิตใจอ่อนโยนและรักสวยรักงาม เมื่อครองคู่กันแล้วจะนำพาวาสนาด้านคนเมตตาเอ็นดูมาให้ มีโชคลาภจากผู้ใหญ่ไม่ขาดสาย ชีวิตคู่จะมีความสุขสดชื่นดั่งน้ำชโลมใจค่ะ",
+        3: "<b>คู่ครองนักสู้สร้างตัว:</b> จะได้คู่ครองที่มีลักษณะแข็งแรง กระฉับกระเฉง ขยันขันแข็งเป็นเลิศ เป็นคนตรงไปตรงมาและรักความยุติธรรม แม้ในช่วงต้นอาจจะมีการกระทบกระทั่งกันบ้างตามประสาคนใจร้อน แต่จะเป็นคู่ที่ร่วมแรงร่วมใจกันสร้างเนื้อสร้างตัวจากศูนย์จนกลายเป็นเศรษฐีได้อย่างน่าอัศจรรย์ค่ะ",
+        4: "<b>คู่ครองปัญญาปราชญ์:</b> จะได้คู่ครองที่มีไหวพริบปฏิภาณดีเยี่ยม เป็นคนฉลาดหลักแหลม พูดจาเก่งและเก่งในเรื่องการทำธุรกิจหรือประสานงาน มักจะเป็นที่ปรึกษาที่ดีที่สุดในชีวิตของคุณ ชีวิตคู่จะส่งเสริมกันในด้านสติปัญญาและการทำงาน คุยกันถูกคอและพากันก้าวหน้าในระดับบริหารค่ะ",
+        5: "<b>คู่ครองบุญหนุนนำ:</b> จะได้คู่ครองที่มีลักษณะเป็นผู้ใหญ่ มีความรู้ความสามารถสูง หรืออาจจะทำงานในด้านการศึกษา ศาสนา หรือสาธารณสุข เป็นคนมีศีลธรรมและชอบช่วยเหลือคนอื่น เมื่อมาอยู่คู่กันจะกลายเป็นคู่บุญคู่บารมีที่ชวนกันสร้างคุณงามความดี ชีวิตจะมีความร่มเย็นเป็นสุขและมั่นคงอย่างที่สุดค่ะ",
+        6: "<b>คู่ครองพราวเสน่ห์:</b> จะได้คู่ครองที่มีรสนิยมดีเลิศ รักความสะดวกสบายและมีความเป็นศิลปินในตัวสูง เป็นคนอารมณ์ดีและมักจะมีทรัพย์สินเงินทองติดตัวมาเสมอ ชีวิตคู่ของคุณจะเต็มไปด้วยสีสัน ความบันเทิง และความสุขสำราญ จะได้รับของขวัญของฝากและโชคลาภก้อนใหญ่ร่วมกันอยู่เนืองๆ ค่ะ",
+        7: "<b>คู่ครองทรหดอดทน:</b> จะได้คู่ครองที่มีความจริงจังกับชีวิต มีความอดทนเป็นเลิศและเป็นคนที่วางแผนการเงินเก่งมาก แม้จะเป็นคนพูดน้อยหรือดูเคร่งเครียดไปบ้าง แต่เป็นคนที่รักใครรักจริงและมั่นคงดั่งภูเขาหิน ชีวิตคู่จะค่อยๆ สร้างฐานะจนมั่นคงถาวรในบั้นปลายและเป็นที่พึ่งพาให้แก่ลูกหลานได้อย่างดีเยี่ยมค่ะ",
+        8: "<b>คู่ครองโชคลาภอัศจรรย์:</b> จะได้คู่ครองที่มีไหวพริบเลิศเลอ หรืออาจจะเป็นคนต่างถิ่นต่างแดน มีซิกเซนส์แรงและเก่งในการแก้ปัญหาเฉพาะหน้า ชีวิตคู่จะนำพาโชคลาภแบบไม่คาดฝันมาให้บ่อยครั้ง มีเกณฑ์พากันไปรวยทางลัดหรือประสบความสำเร็จยิ่งใหญ่จากการกล้าเสี่ยงที่ผ่านการคำนวณมาแล้วค่ะ",
+        9: "<b>คู่ครองสิ่งศักดิ์สิทธิ์จัดสรร:</b> จะได้คู่ครองที่มีจิตใจใฝ่ธรรม หรือมีความสนใจในเรื่องลึกลับ/ของโบราณ เป็นคู่ที่เหมือนโชคชะตาขีดเส้นมาให้พบกันแบบปาฏิหาริย์ ชีวิตคู่จะแคล้วคลาดจากอันตรายทั้งปวงและมักจะมีสิ่งศักดิ์สิทธิ์คอยคุ้มครองประทานพรให้มีกินมีใช้ไม่ขาดมือค่ะ",
+        10: "<b>คู่ครองเสาหลักพันล้าน:</b> จะได้คู่ครองที่เป็นคนมีความรับผิดชอบสูงมาก มีลักษณะเป็นเจ้าคนนายคน หรือเป็นคนที่มีกิจการเป็นของตนเอง เป็นคนที่พร้อมจะแบกรับภาระทุกอย่างในครอบครัวเพื่อให้คุณสบายที่สุด ชีวิตคู่จะส่งเสริมให้คุณกลายเป็นคุณหญิงคุณนายหรือผู้ที่มีฐานะมั่งคั่งระดับแถวหน้าค่ะ",
+        11: "<b>คู่ครองโลกอนาคต:</b> จะได้คู่ครองที่มีความคิดสร้างสรรค์ล้ำยุค หรือทำงานเกี่ยวกับเทคโนโลยีออนไลน์ เป็นคนรักอิสระและมีความเป็นตัวของตัวเองสูงมาก ชีวิตคู่จะไม่มีคำว่าน่าเบื่อ เพราะจะมีการเปลี่ยนแปลงไปสู่สิ่งใหม่ๆ ที่ดีขึ้นเสมอ มักพบรักกันผ่านช่องทางสื่อสารที่ทันสมัยค่ะ",
+        12: "<b>คู่ครองปิดทองหลังพระ:</b> จะได้คู่ครองที่ขยันเงียบๆ ชอบทำงานเบื้องหลัง หรือเป็นคนที่มีความลับในชีวิตที่น่าสนใจ เป็นคนที่ยอมเสียสละเพื่อคนรักได้ทุกอย่างโดยไม่หวังผลตอบแทน ชีวิตคู่จะมีความสุขลึกซึ้งและมั่งคั่งเงียบๆ โดยไม่ต้องโอ้อวดใคร แต่มีความสุขที่แท้จริงอยู่ภายในบ้านค่ะ"
+    };
+
+    // --- 5. คลังเลขพลังสถานะ (สำหรับ Pop-up) ---
+    const powerStatus = {
+        1: "โดดเด่น มีเกียรติยศ ผู้นำสูง ระวังอีโก้", 2: "เสน่ห์เมตตา เจรจาดี มีคนซัพพอร์ต", 3: "ขยัน สู้ไม่ถอย ระวังอุบัติเหตุ/ปากเสียง",
+        4: "ปัญญาดี ไหวพริบเลิศ งานออนไลน์รุ่ง", 5: "ผู้ใหญ่เอ็นดู มีสติปัญญาทางธรรม", 6: "อุดมสมบูรณ์ ทรัพย์มาก มีโชคฟลุ๊คๆ",
+        7: "อดทนเป็นเลิศ สำเร็จยั่งยืนแต่มาช้า", 8: "ไหวพริบแก้ปัญหาเก่ง มีโชคก้อนโต", 9: "สิ่งศักดิ์สิทธิ์คุ้มครอง ลางสังหรณ์แม่น",
+        10: "บารมีคุมคน สำเร็จระดับสูง ภาระหนัก", 11: "ไอเดียล้ำสมัย ลาภลอยกะทันหัน", 12: "งานเบื้องหลังดีเยี่ยม ปิดทองหลังพระ"
+    };
+
+    function showPopup(phopName, powerValue) {
+        let advice = "";
+        if(phopName === "คู่ครอง") advice = spouseProphecy[powerValue];
+        else advice = `<b>วิเคราะห์ภพ ${phopName}:</b> ตกเลขพลัง ${powerValue} หมายถึง ${powerStatus[powerValue]} ค่ะ`;
+
+        Swal.fire({
+            title: `<span style="font-size:1.1rem; color:#8b5e3c;">🔮 ผลพยากรณ์ภพ${phopName}</span>`,
+            html: `<div style="text-align:left; font-family:'Mali'; font-size:0.9rem; line-height:1.6; padding:10px; background:#fffdf0; border-radius:10px;">${advice}</div>`,
+            confirmButtonColor: '#8b5e3c',
+            confirmButtonText: 'รับคำทำนาย 🙏'
+        });
+    }
+
+    function startOracle() {
+        const name = document.getElementById('uName').value 
+        const d = parseInt(document.getElementById('uDate').value);
+        const m = parseInt(document.getElementById('uMonth').value);
+        const y = parseInt(document.getElementById('uYear').value);
+        const bDay = parseInt(document.getElementById('uDay').value);
+        const uTime = document.getElementById('uTime').value;
+
+        const labels = ["วาสนา","ทรัพย์","เพื่อน","ญาติ/บ้าน","บริวาร","อุปสรรค","คู่ครอง","การเปลี่ยนแปลง","ความสำเร็จ","การงาน","โชคลาภ","ความลับ"];
+        const r1 = Array.from({length: 12}, (_, i) => (bDay + i) % 7 || 7);
+        const r2 = Array.from({length: 12}, (_, i) => (m + i) % 7 || 7);
+        const r3 = Array.from({length: 12}, (_, i) => (y % 12 + i) % 7 || 7);
+        const destinyNums = r1.map((v, i) => { let s = v + r2[i] + r3[i]; return s > 12 ? s - 12 : s; });
+
+        document.getElementById('resultArea').style.display = 'block';
+        document.getElementById('resName').innerText = "ดวงชะตาคุณ: " + name;
+        const zodiacs = ["มะเส็ง", "มะเมีย", "มะแม", "วอก", "ระกา", "จอ", "กุน", "ชวด", "ฉลู", "ขาล", "เถาะ", "มะโรง"];
+        document.getElementById('resZodiac').innerText = "ปีนักษัตร: " + zodiacs[(y - 2544) % 12];
+
+        // --- กราฟชีวิต ---
+        const ctx = document.getElementById('lifeChart').getContext('2d');
+        if (myChart) myChart.destroy();
+        myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{ label: 'พลังดวง', data: destinyNums, borderColor: '#8b5e3c', borderWidth: 3, fill: true, tension: 0.4, pointRadius: 6 }]
+            },
+            options: {
+                onClick: (e, elements) => { if (elements.length > 0) { const i = elements[0].index; showPopup(labels[i], destinyNums[i]); } },
+                scales: { y: { min: 1, max: 12 } }
+            }
+        });
+
+        // --- ตารางฐานเลขศาสตร์ ---
+        let tableHtml = `<table><tr><th>เรือนชะตา</th>` + labels.map(l => `<th>${l}</th>`).join('') + `</tr>`;
+        tableHtml += `<tr><td>เลขพลัง</td>` + destinyNums.map((v, i) => `<td onclick="showPopup('${labels[i]}', ${v})" style="cursor:pointer; background:#fffdf0;"><b>${v}</b></td>`).join('') + `</tr></table>`;
+        document.getElementById('tableOutput').innerHTML = tableHtml;
+
+        // --- [ส่วนที่เพิ่มกลับมา] แสดงผลวันเกิด/เดือนเกิด/เวลาเกิด แบบละเอียดลงหน้าจอ ---
+        document.getElementById('prophecyContent').innerHTML = `
+            <div class="card">
+                <h3>📅 พื้นฐานนิสัยวันเกิด (${document.getElementById('uDay').options[document.getElementById('uDay').selectedIndex].text})</h3>
+                <p>${dayData[bDay]}</p>
+            </div>
+            <div class="card">
+                <h3>🌙 พลังเดือนเกิด (${document.getElementById('uMonth').options[document.getElementById('uMonth').selectedIndex].text})</h3>
+                <p>${monthDetailData[m]}</p>
+            </div>
+            <div class="card">
+                <h3>🕰️ พลังเวลาเกิด (${uTime} น.)</h3>
+                <p>${getBirthTimeText(uTime)}</p>
+            </div>
+        `;
+
+        // --- แสดงผลคัมภีร์ยาวพิเศษ ---
+        document.getElementById('fullReportArea').innerHTML = `
+            <div class="report-box">
+                <h2 style="text-align:center; color:#8b5e3c;">📜 เปิดคำทำนาย</h2>
+                <div class="report-item">
+                    <b>👑 วาสนาบารมี (เลข ${destinyNums[0]})</b>
+                    <p>${spouseProphecy[destinyNums[0]].replace("คู่ครอง", "วาสนา")}</p>
+                </div>
+                <div class="report-item">
+                    <b>💖 คู่ครองบุญพาวาสนาส่ง (เลข ${destinyNums[6]})</b>
+                    <p>${spouseProphecy[destinyNums[6]]}</p>
+                </div>
+                <div class="report-item">
+                    <b>💰 คลังมหาสมบัติ (เลข ${destinyNums[1]})</b>
+                    <p>ตกเลข ${powerStatus[destinyNums[1]]} ส่งผลให้พื้นดวงด้านการเงินมีความมั่นคงและมีโอกาสร่ำรวยเป็นเศรษฐีจากการกระทำที่ถูกต้องตามโฉลกดวงชะตาค่ะ</p>
+                </div>
+            </div>
+        `;
+
+        document.getElementById('resultArea').scrollIntoView({ behavior: 'smooth' });
+    }
+</script>
+</body>
+</html>

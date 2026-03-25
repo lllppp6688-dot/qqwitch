@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>maliSiimsi - QQwitch</title>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Mali:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* สไตล์พิเศษสำหรับหน้าเซียมซีเพื่อให้เหมือนรูปตัวอย่าง */
+        .vintage-paper {
+            background: #737e5e; /* สีเขียวมะกอกวินเทจ */
+            color: #fff;
+            padding: 40px 25px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+            width: 85%;
+            margin: 0 auto;
+            position: relative;
+            /* เอฟเฟกต์กระดาษเลื่อนขึ้น */
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .vintage-paper.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .paper-ribbon {
+            width: 40px;
+            height: 40px;
+            background: #d4a3a3; /* สีชมพูกะปิเหมือนริบบิ้นในรูป */
+            border-radius: 50%;
+            margin: -60px auto 20px auto;
+            border: 3px solid #fff;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="arch-container" style="max-width: 500px; min-height: 600px; border-radius: 30px; overflow: hidden; position: relative;">
+        <a href="index.html" class="back-btn" style="text-decoration:none; color:#8b5e3c; position: absolute; top: 20px; left: 20px;">← Back</a>
+        
+        <h1 class="title" style="font-size: 3rem; margin-top: 40px;">mali-Siimsi</h1>
+        
+        <div id="shaking-scene" style="margin-top: 50px;">
+            <img src="image/mk-ss.png" alt="Shake" id="esiimsi-shaker" style="width: 180px; transition: 0.1s;">
+            <p style="margin-top: 20px; font-style: italic;">ตั้งจิตอธิษฐานแล้วกดเขย่า</p>
+            <button id="shake-btn" class="service-btn" style="margin-top: 10px;">เขย่าเซียมซี</button>
+        </div>
+
+        <div id="result-container" style="display: none; margin-top: 80px;">
+            <div class="vintage-paper" id="paper-element">
+                <div class="paper-ribbon"></div> <h3 style="font-family: 'Great Vibes', cursive; font-size: 1.8rem; margin: 0;">The Secret Guidance</h3>
+                <hr style="border: 0; border-top: 1px dashed rgba(255,255,255,0.4); margin: 15px 0;">
+                
+                <p style="font-family: 'Great Vibes', cursive; font-size: 4.5rem; margin: 10px 0; line-height: 1;" id="siimsi-number">#</p>
+                <p style="font-size: 0.8rem; letter-spacing: 2px; opacity: 0.8; margin-bottom: 20px;">FORTUNE NO.</p>
+
+                <div id="siimsi-meaning" style="text-align: left; font-size: 1rem; line-height: 1.6; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 15px;">
+                    </div>
+            </div>
+            
+            <button onclick="location.reload()" class="service-btn" style="margin-top: 30px; background: #8b5e3c; color: #fff;">เขย่าอีกครั้ง</button>
+        </div>
+    </div>
+    <script>
+        
+        const siimsiDeck = [
+            { id: "09", meaning: "<b>ดวงชะตา:</b> เปรียบเหมือนดอกไม้ที่กำลังผลิดอกออกผล สิ่งที่หวังไว้จะสำเร็จในเร็ววันเจ้าค่ะ<br><br><b>ความรัก:</b> สดใสเหมือนสีชมพู จะพบคนถูกใจใจดี" },
+            { id: "18", meaning: "<b>ดวงชะตา:</b> ต้องใช้ความอดทนเหมือนการบ่มไวน์ แล้วผลลัพธ์จะหอมหวานเกินคาด<br><br><b>โชคลาภ:</b> จะมาจากทางทิศเหนือ" },
+            { id: "24", meaning: "<b>ดวงชะตา:</b> ความสำเร็จอยู่แค่เอื้อม อย่าเพิ่งท้อถอย เดินหน้าต่อไปจะดีนักแล" }
+        ];
+
+        const shakeBtn = document.getElementById('shake-btn');
+        const shakerImg = document.getElementById('esiimsi-shaker');
+        const shakingScene = document.getElementById('shaking-scene');
+        const resultContainer = document.getElementById('result-container');
+        const paperElement = document.getElementById('paper-element');
+
+        function startShaking() {
+            // 1. เอฟเฟกต์สั่นบ้อง
+            let count = 0;
+            const interval = setInterval(() => {
+                shakerImg.style.transform = count % 2 === 0 ? "rotate(10deg) translateX(5px)" : "rotate(-10deg) translateX(-5px)";
+                count++;
+                if (count > 10) {
+                    clearInterval(interval);
+                    shakerImg.style.transform = "rotate(0deg)";
+                    showResult();
+                }
+            }, 80);
+        }
+
+        function showResult() {
+            // 2. ซ่อนหน้าแรก
+            shakingScene.style.opacity = "0";
+            setTimeout(() => {
+                shakingScene.style.display = "none";
+                
+                // 3. สุ่มข้อมูล
+                const card = siimsiDeck[Math.floor(Math.random() * siimsiDeck.length)];
+                document.getElementById('siimsi-number').innerText = card.id;
+                document.getElementById('siimsi-meaning').innerHTML = card.meaning;
+
+                // 4. แสดงกระดาษพร้อม Slide Up
+                resultContainer.style.display = "block";
+                setTimeout(() => {
+                    paperElement.classList.add('show');
+                }, 100);
+            }, 500);
+        }
+
+        shakeBtn.addEventListener('click', startShaking);
+    </script>
+</body>
+</html>
